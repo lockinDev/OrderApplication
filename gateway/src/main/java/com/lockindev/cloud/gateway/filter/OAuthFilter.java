@@ -1,7 +1,6 @@
 package com.lockindev.cloud.gateway.filter;
 
 
-
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import org.apache.commons.lang.StringUtils;
@@ -45,31 +44,25 @@ public class OAuthFilter extends ZuulFilter {
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
 
-        //Avoid checking for authentication for the token endpoint
         if(request.getRequestURI().startsWith("/token")){
             return null;
         }
 
-        //Get the value of the Authorization header.
         String authHeader = request.getHeader("Authorization");
 
-        //If the Authorization  header doesn't exist or is not in a valid format.
         if (StringUtils.isEmpty(authHeader)) {
             log.error("No auth header found");
-            //Send error to client
             handleError(requestContext);
             return null;
         }
         else if(authHeader.split("Bearer ").length != 2){
             log.error("Invalid auth header");
-            //Send error to client
             handleError(requestContext);
             return null;
         }
 
         DataOutputStream outputStream = null;
 
-        //Get the value of the token by splitting the Authorization header
         String token = authHeader.split("Bearer ")[1];
 
         String oauthServerURL = env.getProperty("authserver.introspection.endpoint");
@@ -80,18 +73,16 @@ public class OAuthFilter extends ZuulFilter {
 
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.setRequestProperty("Authorization", "Basic YXBwbGljYXRpb24xOmFwcGxpY2F0aW9uMXNlY3JldA==");
+            connection.setRequestProperty("Authorization", "Basic b3JkZXJwcm9jZXNzaW5nYXBwOm9yZGVycHJvY2Vzc2luZ2FwcHNlY3JldA==");
 
             String urlParameters = "token=" + token;
 
-            //Send post request to authorization server to validate token
             connection.setDoOutput(true);
             outputStream = new DataOutputStream(connection.getOutputStream());
             outputStream.writeBytes(urlParameters);
 
             int responseCode = connection.getResponseCode();
 
-            //If the authorization server doesn't respond with a 200.
             if (responseCode != 200) {
                 log.error("Response code from authz server is " + responseCode);
                 handleError(requestContext);
