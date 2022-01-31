@@ -7,6 +7,7 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Bean;
 
 import com.lockindev.cloud.gateway.filter.OAuthFilter;
+import com.lockindev.cloud.gateway.filter.ThrottlingFilter;
 
 @EnableZuulProxy
 @SpringBootApplication
@@ -19,5 +20,10 @@ public class GatewayApplication {
     @Bean
     public OAuthFilter oAuthFilter(){
         return new OAuthFilter();
+    }
+
+    @Bean
+    public ThrottlingFilter throttlingFilter() {
+        return new ThrottlingFilter();
     }
 }
