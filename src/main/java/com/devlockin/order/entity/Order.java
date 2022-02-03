@@ -44,4 +44,10 @@ public class Order {
 
 		this.shippingAddress = shippingAddress;
 	}
+	
+	@Override
+	public String toString() {
+		return "order " + orderId + " item "+  items.toString();
+	}
+	
 }

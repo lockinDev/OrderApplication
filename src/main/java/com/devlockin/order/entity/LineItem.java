@@ -29,5 +29,10 @@ public class LineItem {
 
         this.quantity = quantity;
     }
+    
+    @Override
+    public String toString() {
+    	return itemCode;
+    }
 }
 
