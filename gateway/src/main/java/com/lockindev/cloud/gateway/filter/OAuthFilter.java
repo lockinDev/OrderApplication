@@ -15,9 +15,14 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
 import javax.servlet.http.HttpServletRequest;
 
 public class OAuthFilter extends ZuulFilter {
+
 
     private static Logger log = LoggerFactory.getLogger(OAuthFilter.class);
 
@@ -69,7 +74,12 @@ public class OAuthFilter extends ZuulFilter {
 
         try {
             URL url = new URL(oauthServerURL);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.setDefaultHostnameVerifier(new HostnameVerifier() {
+    			public boolean verify(String hostname, SSLSession session) {
+    				return true;
+    			}
+    		});
 
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
