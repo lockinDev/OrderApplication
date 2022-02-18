@@ -25,4 +25,11 @@ public class InventoryService {
 		}
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
+	
+	@RequestMapping(method = RequestMethod.GET)
+	public ResponseEntity<?> getItems() {
+
+
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
 }

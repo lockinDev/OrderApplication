@@ -52,11 +52,8 @@ public class OrderProcesingService {
 	@GetMapping("/{id}")
 	public ResponseEntity<Order> getOrder(@PathVariable String id) throws OrderNotFoundException {
 
-		if (orders.containsKey(id)) {
-			return new ResponseEntity<Order>(orders.get(id), HttpStatus.OK);
-		} else {
-			throw new OrderNotFoundException();
-		}
+			return new ResponseEntity<Order>(new Order(), HttpStatus.OK);
+
 	}
 
 }
